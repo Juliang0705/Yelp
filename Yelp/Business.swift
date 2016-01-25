@@ -16,6 +16,12 @@ class Business: NSObject {
     let distance: String?
     let ratingImageURL: NSURL?
     let reviewCount: NSNumber?
+    //modified
+    let phoneNumber: String?
+    var latitude:NSNumber? = nil
+    var longitude:NSNumber? = nil
+    let fullAddress:String?
+    let brief:String?
     
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as? String
@@ -29,12 +35,21 @@ class Business: NSObject {
         
         let location = dictionary["location"] as? NSDictionary
         var address = ""
+        var fullAddress = ""
         if location != nil {
             let addressArray = location!["address"] as? NSArray
             if addressArray != nil && addressArray!.count > 0 {
                 address = addressArray![0] as! String
             }
-            
+            let fullAddressArray = location!["display_address"] as? NSArray
+            if fullAddressArray != nil && fullAddressArray!.count > 0 {
+                if !fullAddress.isEmpty{
+                    fullAddress += "\n"
+                }
+                for s in fullAddressArray!{
+                    fullAddress += s as! String
+                }
+            }
             let neighborhoods = location!["neighborhoods"] as? NSArray
             if neighborhoods != nil && neighborhoods!.count > 0 {
                 if !address.isEmpty {
@@ -42,8 +57,14 @@ class Business: NSObject {
                 }
                 address += neighborhoods![0] as! String
             }
+            let coordinate = location!["coordinate"] as? NSDictionary
+            if coordinate != nil{
+                self.latitude = coordinate!["latitude"] as? NSNumber
+                self.longitude = coordinate!["longitude"] as? NSNumber
+            }
         }
         self.address = address
+        self.fullAddress = fullAddress
         
         let categoriesArray = dictionary["categories"] as? [[String]]
         if categoriesArray != nil {
@@ -71,10 +92,14 @@ class Business: NSObject {
         } else {
             ratingImageURL = nil
         }
-        
         reviewCount = dictionary["review_count"] as? NSNumber
+        
+        //my additions
+        phoneNumber = dictionary["display_phone"] as? String
+        brief = dictionary["snippet_text"] as? String
+       // print(phoneNumber,latitude, longitude, fullAddress, brief )
+        
     }
-    
     class func businesses(array array: [NSDictionary]) -> [Business] {
         var businesses = [Business]()
         for dictionary in array {
@@ -88,7 +113,7 @@ class Business: NSObject {
         YelpClient.sharedInstance.searchWithTerm(term, completion: completion)
     }
     
-    class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: ([Business]!, NSError!) -> Void) -> Void {
-        YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, completion: completion)
+    class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location:String? ,limit: Int?, completion: ([Business]!, NSError!) -> Void) -> Void {
+        YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, location: location,limit: limit, completion: completion)
     }
 }
