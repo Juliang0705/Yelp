@@ -160,17 +160,17 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="253" text="phone" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Bk-k7-KZP">
                                 <rect key="frame" x="21" y="386" width="278" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.060979371419999998" green="0.0" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="brief" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WIZ-Xd-5pw">
-                                <rect key="frame" x="21" y="447" width="278" height="111"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IRp-KQ-bij">
+                                <rect key="frame" x="21" y="411" width="278" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" misplaced="YES" text="address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IRp-KQ-bij">
-                                <rect key="frame" x="21" y="414" width="278" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="brief" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WIZ-Xd-5pw">
+                                <rect key="frame" x="21" y="434" width="278" height="35"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -178,7 +178,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="bbi-7T-Q2d" firstAttribute="top" secondItem="WIZ-Xd-5pw" secondAttribute="bottom" constant="10" id="3fA-al-oMh"/>
+                            <constraint firstItem="bbi-7T-Q2d" firstAttribute="top" relation="lessThanOrEqual" secondItem="WIZ-Xd-5pw" secondAttribute="bottom" constant="99" id="3fA-al-oMh"/>
                             <constraint firstItem="3Bk-k7-KZP" firstAttribute="leading" secondItem="8H0-hJ-ta7" secondAttribute="leading" constant="21" id="DB8-Fv-mnO"/>
                             <constraint firstItem="KVD-6o-WYp" firstAttribute="leading" secondItem="8H0-hJ-ta7" secondAttribute="leading" id="Fz9-Gr-qrU"/>
                             <constraint firstItem="WIZ-Xd-5pw" firstAttribute="leading" secondItem="8H0-hJ-ta7" secondAttribute="leading" constant="21" id="Pfk-kn-OaO"/>
@@ -189,7 +189,7 @@
                             <constraint firstAttribute="trailing" secondItem="IRp-KQ-bij" secondAttribute="trailing" constant="21" id="aNT-4g-5mS"/>
                             <constraint firstItem="3Bk-k7-KZP" firstAttribute="top" secondItem="KVD-6o-WYp" secondAttribute="bottom" constant="41" id="b6i-Zi-QfD"/>
                             <constraint firstItem="Abl-aa-hdr" firstAttribute="leading" secondItem="8H0-hJ-ta7" secondAttribute="leading" constant="21" id="en6-LH-epu"/>
-                            <constraint firstItem="WIZ-Xd-5pw" firstAttribute="top" relation="lessThanOrEqual" secondItem="IRp-KQ-bij" secondAttribute="bottom" constant="15" id="hr8-ah-CAL"/>
+                            <constraint firstItem="WIZ-Xd-5pw" firstAttribute="top" secondItem="IRp-KQ-bij" secondAttribute="bottom" constant="2.5" id="hr8-ah-CAL"/>
                             <constraint firstItem="Abl-aa-hdr" firstAttribute="top" secondItem="KVD-6o-WYp" secondAttribute="bottom" constant="12" id="j0Q-Vq-fHF"/>
                             <constraint firstItem="IRp-KQ-bij" firstAttribute="top" secondItem="3Bk-k7-KZP" secondAttribute="bottom" constant="5" id="k0f-Ea-4Ns"/>
                             <constraint firstAttribute="trailing" secondItem="WIZ-Xd-5pw" secondAttribute="trailing" constant="21" id="lnh-EL-zmz"/>

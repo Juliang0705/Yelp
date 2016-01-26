@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController,MKMapViewDelegate{
 
     
     var business:Business!
@@ -25,6 +25,8 @@ class DetailViewController: UIViewController {
         print(business.name)
         navigationItem.title = business.name
         setupLabels()
+        setupMap()
+        setUpBackgroundImage()
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,18 +36,50 @@ class DetailViewController: UIViewController {
     
     func setupLabels(){
         if let businessName = business.name{
-            name.text = "name: " + businessName
+            name.text = "Name: " + businessName
         }
         if let phoneNumber = business.phoneNumber{
-            phone.text = "TEL: " + phoneNumber
+            let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue]
+            let underlineAttributedString = NSAttributedString(string:"TEL: " + phoneNumber, attributes: underlineAttribute)
+            phone.attributedText = underlineAttributedString
         }
         if let fullAddress = business.fullAddress{
-            address.text = "Address : " + fullAddress
+            address.text = "Address: " + fullAddress
         }
         if let briefMessage = business.brief{
-            brief.text = "brief: " + briefMessage
+            brief.text = "Brief:\n " + briefMessage
+            brief.sizeToFit()
         }
     }
+    
+    func setupMap(){
+        if let latitude = business.latitude?.doubleValue{
+            if let longitude = business.longitude?.doubleValue{
+                let location = CLLocation(latitude: latitude, longitude: longitude)
+                let regionRadius: CLLocationDistance = 600
+                let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
+                    regionRadius * 2.0, regionRadius * 2.0)
+                map.setRegion(coordinateRegion,animated: true)
+                let dropPin = MKPointAnnotation()
+                dropPin.coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+                dropPin.title = business.name
+                map.addAnnotation(dropPin)
+            }
+        }
+        
+    }
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        for touch: AnyObject in touches {
+            let location = touch.locationInView(self.view)
+            if CGRectContainsPoint(phone.frame, location) {
+                UIApplication.sharedApplication().openURL(NSURL(string: "tel://" + business.phoneNumber!)!)
+            }
+        }
+
+    }
+    func setUpBackgroundImage(){
+    }
+    
 
     /*
     // MARK: - Navigation

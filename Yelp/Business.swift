@@ -35,7 +35,7 @@ class Business: NSObject {
         
         let location = dictionary["location"] as? NSDictionary
         var address = ""
-        var fullAddress = ""
+        var fullAddress = " "
         if location != nil {
             let addressArray = location!["address"] as? NSArray
             if addressArray != nil && addressArray!.count > 0 {
@@ -43,8 +43,8 @@ class Business: NSObject {
             }
             let fullAddressArray = location!["display_address"] as? NSArray
             if fullAddressArray != nil && fullAddressArray!.count > 0 {
-                if !fullAddress.isEmpty{
-                    fullAddress += "\n"
+                if fullAddress != " "{
+                    fullAddress += ", "
                 }
                 for s in fullAddressArray!{
                     fullAddress += s as! String

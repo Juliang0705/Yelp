@@ -45,5 +45,10 @@
 	<string>Set to your current location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Find your restaurants in your current location</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>telprompt</string>
+        <string>tel</string>
+    </array>
 </dict>
 </plist>
