@@ -47,9 +47,10 @@ class Business: NSObject {
                     fullAddress += ", "
                 }
                 for s in fullAddressArray!{
-                    fullAddress += s as! String
+                    fullAddress += (s as! String + "\n")
                 }
             }
+            fullAddress.removeAtIndex(fullAddress.endIndex.predecessor())
             let neighborhoods = location!["neighborhoods"] as? NSArray
             if neighborhoods != nil && neighborhoods!.count > 0 {
                 if !address.isEmpty {
