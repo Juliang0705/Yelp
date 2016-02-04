@@ -8,36 +8,53 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIScrollViewDelegate {
+
+
+protocol BusinessViewControllerDelegate{
+    func BusinessViewAddFavorite(BusinessName name: String, BusinessData :Business)
+    func BusinessViewRemoveFavorite(BusinessName name: String)
+    func BusinessViewCheckIfBusinessIsFavorite(BusinessName name: String) -> Bool
+}
+
+
+class BusinessesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIScrollViewDelegate,SideBarDelegate{
 
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business]!
-    var searchBar: UISearchBar!
+    var searchBar: UISearchBar = UISearchBar()
+    var searchStatus = false
     var isMoreDataLoading = false
     var loadingMoreView:InfiniteScrollActivityView!
     var locationGetter:Location = Location()
-    var defaultSearch = "Chinese"
+    var defaultSearch = "Steak"
     var currentLimit = 10
+    
+    @IBOutlet weak var errorView: UIView!
+    @IBOutlet weak var searchButton: UIButton!
+    
+    let categories = ["Restaurants","Food","Shopping","NightLife","Coffee & Tea","Home Services","Automotive","Active Life","Beauty & Spas", "Financial Services","Pets","Religious Organizations","Education","Hotels & Travel","Health & Medical","Local Servives","Real Estate","Arts & Entertainment"]
+    var sideBar:SideBar?
+    let userData = NSUserDefaults.standardUserDefaults()
+    var favorites:[String:Business] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Yelp"
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
-        setupSearchBar()
+        searchBar.delegate = self
+        self.view.sendSubviewToBack(errorView)
         setupActivityView()
-        search(defaultSearch)
-
-/* Example of Yelp search with more search options specified
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
-            
-            for business in businesses {
-                print(business.name!)
-                print(business.address!)
-            }
+        if let recentSearch = userData.objectForKey("recentSearch") as? String{
+            search(recentSearch)
+            defaultSearch = recentSearch
+        }else {
+            search(defaultSearch)
         }
-*/
+        sideBar = SideBar(sourceView:self.view,menuItems:categories)
+        sideBar!.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -57,16 +74,22 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
         cell.business = businesses[indexPath.row]
         return cell
     }
-    func setupSearchBar(){
-        searchBar = UISearchBar()
-        searchBar.delegate = self
-        searchBar.sizeToFit()
-        navigationItem.titleView = searchBar
-        searchDisplayController?.displaysSearchBarInNavigationBar = true
+    
+    @IBAction func seachBarClicked(sender: UIButton) {
+        if searchStatus == false {
+            navigationItem.titleView = searchBar
+            searchStatus = true
+            searchBar.becomeFirstResponder()
+        }
+        else {
+            searchBar.text = ""
+            searchBar.resignFirstResponder()
+            navigationItem.titleView = nil
+            searchStatus = false
+            searchBar.resignFirstResponder()
+        }
     }
-    
-    
-    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+   func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         self.searchBar.showsCancelButton = true
     }
     
@@ -136,11 +159,22 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
     func search(s:String){
         currentLimit = 10
         Business.searchWithTerm(s, sort:YelpSortMode.Distance , categories: nil, deals: nil,location: locationGetter.getCurrentLocationAsString(),limit: currentLimit) {  (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
-            self.tableView.reloadData()
+            if (businesses.count == 0 || error != nil){
+                self.view.bringSubviewToFront(self.errorView)
+            }else {
+                self.businesses = businesses
+                self.view.sendSubviewToBack(self.errorView)
+                self.tableView.reloadData()
+                self.userData.setObject(s, forKey: "recentSearch")
+                self.defaultSearch = s
+            }
         }
     }
     
+    func sideBarDidSelectButtonAtIndex(index: Int) {
+        print (categories[index])
+        search(categories[index])
+    }
     
     // MARK: - Navigation
 
@@ -148,11 +182,13 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPathForCell(cell)
-        let business = businesses![indexPath!.row]
-        let detailViewController = segue.destinationViewController as! DetailViewController
-        detailViewController.business = business
+        let cell = sender as? UITableViewCell
+        if cell != nil {
+            let indexPath = tableView.indexPathForCell(cell!)
+            let business = businesses![indexPath!.row]
+            let detailViewController = segue.destinationViewController as! DetailViewController
+            detailViewController.business = business
+        }
     }
     
 

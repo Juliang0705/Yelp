@@ -17,15 +17,18 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
     
     var businessDetailArray = [(String,String)]()
 
+    @IBOutlet weak var favoriteButton: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(business.name)
         setUpDetailArray()
         detailTable.delegate = self
         detailTable.dataSource = self
         detailTable.estimatedRowHeight = 80
         detailTable.rowHeight = UITableViewAutomaticDimension
         navigationItem.title = business.name
+        map.delegate = self
+        toggleFavoriteButtonAppearance()
         setupMap()
     }
 
@@ -79,24 +82,77 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
             let underlineAttributedString = NSAttributedString(string:"TEL: " + businessDetailArray[indexPath.row].1, attributes: underlineAttribute)
             cell.descriptionLabel.attributedText = underlineAttributedString
             cell.descriptionLabel.textColor = UIColor.blueColor();
+            cell.descriptionLabel.userInteractionEnabled = true
+            let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "phoneNumberLabelTap")
+            cell.descriptionLabel.addGestureRecognizer(tapGesture)
+            
         }else{
             cell.descriptionLabel.text = businessDetailArray[indexPath.row].1
         }
         return cell
         
     }
+    func phoneNumberLabelTap() {
+        let phoneUrl: NSURL = NSURL(string: "telprompt:\(business.phoneNumber!)")!
+        if UIApplication.sharedApplication().canOpenURL(phoneUrl) {
+            UIApplication.sharedApplication().openURL(phoneUrl)
+        }
+        else {
+            let alert = UIAlertController(title: nil, message: "Call facility is not available", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .Default, handler: nil))
+            self.presentViewController(alert,animated: true,completion: nil)
+        }
+    }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4;
     }
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        for touch: AnyObject in touches {
-            let location = touch.locationInView(self.detailTable)
-            if CGRectContainsPoint(detailTable.cellForRowAtIndexPath(NSIndexPath(index: 1))!.frame, location) {
-                UIApplication.sharedApplication().openURL(NSURL(string: "tel://" + business.phoneNumber!)!)
-            }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "locationImage"
+        
+        // custom image annotation
+        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+        if (annotationView == nil) {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+        }
+        else {
+            annotationView!.annotation = annotation
+        }
+        let imageView = UIImageView()
+        if let imageUrl = business.imageURL{
+            imageView.setImageWithURL(imageUrl)
+        }
+        annotationView!.detailCalloutAccessoryView = imageView;
+        annotationView!.becomeFirstResponder()
+        annotationView!.canShowCallout = true
+        return annotationView
+    }
+    
+    @IBAction func FavoriteButtonClicked(sender: UIBarButtonItem) {
+        let n: Int! = self.navigationController?.viewControllers.count
+        let businessesViewController: BusinessesViewController = self.navigationController?.viewControllers[n-2] as! BusinessesViewController
+        
+        if businessesViewController.favorites[business.name!] == nil {
+            businessesViewController.favorites.updateValue(business, forKey: business.name!) // add it
+            favoriteButton.image = UIImage(named: "like")
+        }else{
+            // remove it
+            businessesViewController.favorites.removeValueForKey(business.name!)
+            favoriteButton.image = UIImage(named: "unlike")
         }
     }
+    func toggleFavoriteButtonAppearance(){
+        let n: Int! = self.navigationController?.viewControllers.count
+        let businessesViewController: BusinessesViewController = self.navigationController?.viewControllers[n-2] as! BusinessesViewController
+        if businessesViewController.favorites[business.name!] == nil {
+            favoriteButton.image = UIImage(named: "like")
+        }else{
+            // remove it
+            businessesViewController.favorites.removeValueForKey(business.name!)
+            favoriteButton.image = UIImage(named: "unlike")
+        }
 
+    }
     /*
     // MARK: - Navigation
 
