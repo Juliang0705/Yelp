@@ -22,6 +22,8 @@
 		388205241C53F4C500665F4A /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388205231C53F4C500665F4A /* BusinessCell.swift */; };
 		388E3AED1C62E37100D5B96C /* SideBarViewControllerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388E3AEC1C62E37100D5B96C /* SideBarViewControllerTableViewController.swift */; };
 		388E3AEF1C62E83100D5B96C /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388E3AEE1C62E83100D5B96C /* Sidebar.swift */; };
+		389795001C64664E0098FFEF /* FavoriteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389794FF1C64664E0098FFEF /* FavoriteCollectionViewCell.swift */; };
+		38B1584F1C63F77D0050D4BE /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B1584E1C63F77D0050D4BE /* FavoriteViewController.swift */; };
 		90B718C590BD546DEFEF0D61 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3C5CF4FD317D72ABE2AAC4 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,8 @@
 		388205231C53F4C500665F4A /* BusinessCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		388E3AEC1C62E37100D5B96C /* SideBarViewControllerTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarViewControllerTableViewController.swift; sourceTree = "<group>"; };
 		388E3AEE1C62E83100D5B96C /* Sidebar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
+		389794FF1C64664E0098FFEF /* FavoriteCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteCollectionViewCell.swift; sourceTree = "<group>"; };
+		38B1584E1C63F77D0050D4BE /* FavoriteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		97D8B2E3FFD1AF4F4A707E47 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		AA3C5CF4FD317D72ABE2AAC4 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBD540129B10DFE60E8C24E2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 				22AAAA9B1AEA1EC300A544AF /* BusinessesViewController.swift */,
 				387337251C559009000F57E8 /* DetailViewController.swift */,
 				388E3AEC1C62E37100D5B96C /* SideBarViewControllerTableViewController.swift */,
+				38B1584E1C63F77D0050D4BE /* FavoriteViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -174,6 +179,7 @@
 				388205231C53F4C500665F4A /* BusinessCell.swift */,
 				387337211C557918000F57E8 /* InfiniteScrollActivityView.swift */,
 				385D66811C5ECA5100DC23BD /* DetailTableViewCell.swift */,
+				389794FF1C64664E0098FFEF /* FavoriteCollectionViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -348,6 +354,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				389795001C64664E0098FFEF /* FavoriteCollectionViewCell.swift in Sources */,
 				385D66821C5ECA5100DC23BD /* DetailTableViewCell.swift in Sources */,
 				387337221C557918000F57E8 /* InfiniteScrollActivityView.swift in Sources */,
 				388205241C53F4C500665F4A /* BusinessCell.swift in Sources */,
@@ -358,6 +365,7 @@
 				388E3AED1C62E37100D5B96C /* SideBarViewControllerTableViewController.swift in Sources */,
 				388E3AEF1C62E83100D5B96C /* Sidebar.swift in Sources */,
 				387337241C558260000F57E8 /* Location.swift in Sources */,
+				38B1584F1C63F77D0050D4BE /* FavoriteViewController.swift in Sources */,
 				387337261C559009000F57E8 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

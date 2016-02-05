@@ -9,15 +9,7 @@
 import UIKit
 
 
-
-protocol BusinessViewControllerDelegate{
-    func BusinessViewAddFavorite(BusinessName name: String, BusinessData :Business)
-    func BusinessViewRemoveFavorite(BusinessName name: String)
-    func BusinessViewCheckIfBusinessIsFavorite(BusinessName name: String) -> Bool
-}
-
-
-class BusinessesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIScrollViewDelegate,SideBarDelegate{
+class BusinessesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate,UIScrollViewDelegate,SideBarDelegate,DetaileViewControllerDelegate,FavoriteViewControllerDelegate{
 
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business]!
@@ -39,6 +31,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.rootViewController = self
         navigationItem.title = "Yelp"
         tableView.delegate = self
         tableView.dataSource = self
@@ -52,6 +46,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
             defaultSearch = recentSearch
         }else {
             search(defaultSearch)
+        }
+        //get saved favorite
+        if let decoded  = userData.objectForKey("favorites") as? NSData{
+            let savedFavorites = NSKeyedUnarchiver.unarchiveObjectWithData(decoded) as! [String:Business]
+            favorites = savedFavorites
         }
         sideBar = SideBar(sourceView:self.view,menuItems:categories)
         sideBar!.delegate = self
@@ -166,6 +165,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
                 self.view.sendSubviewToBack(self.errorView)
                 self.tableView.reloadData()
                 self.userData.setObject(s, forKey: "recentSearch")
+                self.userData.synchronize()
                 self.defaultSearch = s
             }
         }
@@ -176,6 +176,27 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
         search(categories[index])
     }
     
+    func DetailViewControllerAddBusiness(name: String, business: Business){
+        favorites.updateValue(business, forKey: name) // add it
+    }
+    func DetailViewControllerRemoveBusiness(name: String){
+        favorites.removeValueForKey(name)
+    }
+    func DetailViewControllerHasFavoritedBusiness(name: String) -> Bool{
+        return favorites[name] != nil
+    }
+    func FavoriteViewControllerAddBusiness(name: String, business: Business){
+        favorites.updateValue(business, forKey: name) // add it
+    }
+    func FavoriteViewControllerRemoveBusiness(name: String){
+        favorites.removeValueForKey(name)
+    }
+    func FavoriteViewControllerHasFavoritedBusiness(name: String) -> Bool{
+        return favorites[name] != nil
+    }
+    func FavoiteViewControllerGetBusinesses() -> [String:Business]{
+        return favorites
+    }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -188,6 +209,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource,UITableV
             let business = businesses![indexPath!.row]
             let detailViewController = segue.destinationViewController as! DetailViewController
             detailViewController.business = business
+            detailViewController.delegate = self
+        }else{
+            let favoriteViewController = segue.destinationViewController as! FavoriteViewController
+            favoriteViewController.delegate = self
         }
     }
     

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Business: NSObject {
+class Business: NSObject,NSCoding{
     let name: String?
     let address: String?
     let imageURL: NSURL?
@@ -22,17 +22,19 @@ class Business: NSObject {
     var longitude:NSNumber? = nil
     let fullAddress:String?
     let brief:String?
+    let mobileUrl:String?
     
+    var jsonData:NSDictionary
     init(dictionary: NSDictionary) {
+        jsonData = dictionary
         name = dictionary["name"] as? String
-        
         let imageURLString = dictionary["image_url"] as? String
         if imageURLString != nil {
             imageURL = NSURL(string: imageURLString!)!
         } else {
             imageURL = nil
         }
-        
+        mobileUrl = dictionary["mobile_url"] as? String
         let location = dictionary["location"] as? NSDictionary
         var address = ""
         var fullAddress = " "
@@ -117,4 +119,15 @@ class Business: NSObject {
     class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location:String? ,limit: Int?, completion: ([Business]!, NSError!) -> Void) -> Void {
         YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, location: location,limit: limit, completion: completion)
     }
+    required convenience init(coder aDecoder: NSCoder) {
+        let data = aDecoder.decodeObjectForKey("data") as! NSDictionary
+        self.init(dictionary: data)
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(jsonData, forKey: "data")
+    }
+    
+    
+    
 }

@@ -9,6 +9,13 @@
 import UIKit
 import MapKit
 
+@objc protocol DetaileViewControllerDelegate{
+    func DetailViewControllerAddBusiness(name: String, business: Business)
+    func DetailViewControllerRemoveBusiness(name: String)
+    func DetailViewControllerHasFavoritedBusiness(name: String) -> Bool
+    optional func DetailViewControllerUpdateFavorite()
+}
+
 class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataSource,UITableViewDelegate{
     
     var business:Business!
@@ -18,6 +25,7 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
     var businessDetailArray = [(String,String)]()
 
     @IBOutlet weak var favoriteButton: UIBarButtonItem!
+    var delegate:DetaileViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,11 +81,17 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
         }else{
             businessDetailArray.append(("Brief: ", "Not Available"))
         }
+        if let _ = business.mobileUrl{
+            businessDetailArray.append(("Website: ","Click Here"))
+        }else{
+            businessDetailArray.append(("Website: ","Not Available"))
+        }
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DetailCell", forIndexPath: indexPath) as! DetailTableViewCell
         cell.titleLabel.text = businessDetailArray[indexPath.row].0
-        if cell.titleLabel.text ==  "Phone Number: "{
+        //make it callable
+        if businessDetailArray[indexPath.row].0 ==  "Phone Number: "{
             let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue,NSUnderlineColorAttributeName: UIColor.blueColor()]
             let underlineAttributedString = NSAttributedString(string:"TEL: " + businessDetailArray[indexPath.row].1, attributes: underlineAttribute)
             cell.descriptionLabel.attributedText = underlineAttributedString
@@ -86,7 +100,17 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
             let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "phoneNumberLabelTap")
             cell.descriptionLabel.addGestureRecognizer(tapGesture)
             
-        }else{
+        }//make it browsable
+        else if businessDetailArray[indexPath.row].0 == "Website: "{
+            let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue,NSUnderlineColorAttributeName: UIColor.blueColor()]
+            let underlineAttributedString = NSAttributedString(string: businessDetailArray[indexPath.row].1, attributes: underlineAttribute)
+            cell.descriptionLabel.attributedText = underlineAttributedString
+            cell.descriptionLabel.textColor = UIColor.blueColor();
+            cell.descriptionLabel.userInteractionEnabled = true
+            let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "urlLabelTap")
+            cell.descriptionLabel.addGestureRecognizer(tapGesture)
+        }
+        else{
             cell.descriptionLabel.text = businessDetailArray[indexPath.row].1
         }
         return cell
@@ -103,8 +127,12 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
             self.presentViewController(alert,animated: true,completion: nil)
         }
     }
+    
+    func urlLabelTap(){
+        UIApplication.sharedApplication().openURL(NSURL(string: business.mobileUrl!)!)
+    }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4;
+        return 5;
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -129,27 +157,22 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
     }
     
     @IBAction func FavoriteButtonClicked(sender: UIBarButtonItem) {
-        let n: Int! = self.navigationController?.viewControllers.count
-        let businessesViewController: BusinessesViewController = self.navigationController?.viewControllers[n-2] as! BusinessesViewController
-        
-        if businessesViewController.favorites[business.name!] == nil {
-            businessesViewController.favorites.updateValue(business, forKey: business.name!) // add it
+        if delegate?.DetailViewControllerHasFavoritedBusiness(business.name!) == false {
+            delegate?.DetailViewControllerAddBusiness(business.name!, business: business)
             favoriteButton.image = UIImage(named: "like")
         }else{
             // remove it
-            businessesViewController.favorites.removeValueForKey(business.name!)
+            delegate?.DetailViewControllerRemoveBusiness(business.name!)
             favoriteButton.image = UIImage(named: "unlike")
         }
+        delegate?.DetailViewControllerUpdateFavorite?()
     }
     func toggleFavoriteButtonAppearance(){
-        let n: Int! = self.navigationController?.viewControllers.count
-        let businessesViewController: BusinessesViewController = self.navigationController?.viewControllers[n-2] as! BusinessesViewController
-        if businessesViewController.favorites[business.name!] == nil {
-            favoriteButton.image = UIImage(named: "like")
-        }else{
-            // remove it
-            businessesViewController.favorites.removeValueForKey(business.name!)
+       
+        if delegate?.DetailViewControllerHasFavoritedBusiness(business.name!) == false {
             favoriteButton.image = UIImage(named: "unlike")
+        }else{
+            favoriteButton.image = UIImage(named: "like")
         }
 
     }
