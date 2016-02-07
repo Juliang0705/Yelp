@@ -150,8 +150,10 @@ class DetailViewController: UIViewController,MKMapViewDelegate, UITableViewDataS
         if let imageUrl = business.imageURL{
             imageView.setImageWithURL(imageUrl)
         }
-        annotationView!.detailCalloutAccessoryView = imageView;
-        annotationView!.becomeFirstResponder()
+        if annotation.title! != "Current Location"{
+            annotationView!.detailCalloutAccessoryView = imageView;
+            annotationView!.becomeFirstResponder()
+        }
         annotationView!.canShowCallout = true
         return annotationView
     }
